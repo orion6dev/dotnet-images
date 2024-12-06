@@ -25,6 +25,3 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends powershell && \
     rm packages-microsoft-prod.deb && \
     rm -rf /var/lib/apt/lists/*
-
-# Verify PowerShell installation
-RUN pwsh --version
