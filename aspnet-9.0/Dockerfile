@@ -18,9 +18,9 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
 
 # Set environment variables for the locale
-ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
-ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 # Install curl
 RUN apt-get install -y curl
@@ -65,4 +65,4 @@ RUN pwsh --version
 RUN rm -rf /var/lib/apt/lists/*
 
 # Set Java home environment variable
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
