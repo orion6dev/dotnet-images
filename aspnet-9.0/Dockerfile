@@ -1,8 +1,10 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+﻿# Use the official ASP.NET runtime image for .NET 9
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 
 # Avoid prompts with apt
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Set up working directory
 WORKDIR /
 
 # Update package lists
@@ -12,10 +14,19 @@ RUN apt-get update
 RUN apt-get install -y locales
 
 # Generate the en_US.UTF-8 locale
-RUN locale-gen en_US.UTF-8
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+RUN locale-gen
 
-# Install curl and unzip
-RUN apt-get install -y curl unzip
+# Set environment variables for the locale
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+# Install curl
+RUN apt-get install -y curl
+
+# Install unzip
+RUN apt-get install -y unzip
 
 # Install OpenJDK 17
 RUN apt-get install -y openjdk-17-jdk
@@ -29,8 +40,8 @@ RUN unzip ijhttp.zip
 # Clean up the zip file
 RUN rm ijhttp.zip
 
-# Clean up the apt cache
-RUN rm -rf /var/lib/apt/lists/*
+# Install wget
+RUN apt-get install -y wget
 
 # Add Microsoft's package repository for PowerShell
 RUN wget -q https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb
@@ -50,10 +61,8 @@ RUN rm packages-microsoft-prod.deb
 # Verify PowerShell installation
 RUN pwsh --version
 
-# Generate the en_US.UTF-8 locale
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
-    
-# Set environment variables for the locale
-ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+# Clean up the apt cache
+RUN rm -rf /var/lib/apt/lists/*
 
+# Set Java home environment variable
 ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
